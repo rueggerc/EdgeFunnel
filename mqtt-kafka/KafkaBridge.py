@@ -1,11 +1,14 @@
 
 import paho.mqtt.client as mqtt
+from kafka import KafkaProducer
+import sys
  
 MQTT_SERVER = "captain"
 MQTT_PATH = "/home/sensors/#"
 
 def publish_kafka_message(producer_instance, topic_name, key, value):
     try:
+        printf("Publish to Kafka: " + value);
         key_bytes = bytes(key, encoding='utf-8')
         value_bytes = bytes(value, encoding='utf-8')
         producer_instance.send(topic_name, key=key_bytes, value=value_bytes)
@@ -39,8 +42,6 @@ def on_mqtt_message(client, userdata, message):
     # 'sensor3,64.04,99.90,1556182811311'
     items = payload.split(",")    
     key = items[0]
-
-    print(f"host={host} temp={temperature} humidity={humidity}")
     publish_kafka_message(kafka_producer, kafka_topic, key, payload)
     
     
