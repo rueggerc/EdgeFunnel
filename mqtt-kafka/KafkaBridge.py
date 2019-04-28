@@ -46,6 +46,7 @@ def on_mqtt_message(client, userdata, message):
       items = payload.split(",")    
       key = items[0]
       print("BEFORE PUBLISH")
+      kafka_producer = userdata
       publish_kafka_message(kafka_producer, kafka_topic, key, payload)
     except Exception as ex:
       print("on_mqtt_message ERROR" + str(ex))
@@ -62,6 +63,7 @@ def main():
     client = mqtt.Client()
     client.on_connect = on_mqtt_connect  
     client.on_message = on_mqtt_message
+    client.user_data_set(kafka_producer)
  
     print("Client Connect")
     client.connect(MQTT_SERVER, 1883, 60)
